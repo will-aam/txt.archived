@@ -1,0 +1,37 @@
+.theme-retro {
+  --background: oklch(0.95 0.03 70); /* bege amarelado */
+  --foreground: oklch(0.2 0.05 50); /* marrom escuro */
+  --card: oklch(0.98 0.02 70);
+  --card-foreground: oklch(0.2 0.05 50);
+  --popover: oklch(0.98 0.02 70);
+  --popover-foreground: oklch(0.2 0.05 50);
+  --primary: oklch(0.65 0.18 30); /* laranja queimado */
+  --primary-foreground: oklch(0.98 0.02 70);
+  --secondary: oklch(0.7 0.1 300); /* roxo suave */
+  --secondary-foreground: oklch(0.98 0.02 70);
+  --muted: oklch(0.9 0.02 70);
+  --muted-foreground: oklch(0.4 0.03 50);
+  --accent: oklch(0.7 0.2 150); /* verde vintage */
+  --accent-foreground: oklch(0.98 0.02 70);
+  --destructive: oklch(0.55 0.22 25); /* vermelho queimado */
+  --destructive-foreground: oklch(0.98 0.02 70);
+  --border: oklch(0.85 0.02 70);
+  --input: oklch(0.88 0.02 70);
+  --ring: oklch(0.65 0.18 30);
+}
+
+.theme-retro body {
+  background-color: var(--background);
+  color: var(--foreground);
+
+  /* padrão retrô geométrico */
+  background-image: radial-gradient(
+      circle at 20% 20%,
+      oklch(0.9 0.12 30) 15%,
+      transparent 16%
+    ),
+    radial-gradient(circle at 80% 80%, oklch(0.7 0.1 300) 15%, transparent 16%),
+    radial-gradient(circle at 40% 70%, oklch(0.7 0.2 150) 15%, transparent 16%);
+  background-size: 120px 120px;
+  background-repeat: repeat;
+}

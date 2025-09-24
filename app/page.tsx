@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { ThemeSidebar } from "@/components/ui/theme-sidebar";
 
 const translations = {
   pt: {
@@ -221,189 +222,197 @@ export default function PoetryBlog() {
     : -1;
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-4xl mx-auto px-6 py-12">
-        <header className="text-center mb-16 relative">
-          <div className="absolute top-0 right-0">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setLanguage(language === "pt" ? "en" : "pt")}
-              className="flex items-center gap-2"
-            >
-              <Languages className="w-4 h-4" />
-              {t.language}
-            </Button>
-          </div>
-          <h1 className="text-4xl font-serif text-foreground mb-4">
-            {t.title}
-          </h1>
-          <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl mx-auto">
-            {t.subtitle}
-          </p>
-        </header>
-
-        <div className="mb-12 flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-grow">
-            <Input
-              type="text"
-              placeholder={t.searchPlaceholder}
-              className="pl-10"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          </div>
-          <div className="flex items-center gap-2 overflow-x-auto pb-2">
-            <Button
-              variant={!searchTerm ? "default" : "outline"}
-              size="sm"
-              onClick={() => setSearchTerm("")}
-            >
-              {t.allTags}
-            </Button>
-            {allTags.map((tag) => (
+    <>
+      <ThemeSidebar />
+      <div className="min-h-screen bg-background">
+        <div className="max-w-4xl mx-auto px-6 py-12">
+          <header className="mb-16">
+            {/* Div para o botão de tradução */}
+            <div className="flex justify-end mb-4">
               <Button
-                key={tag}
-                variant={searchTerm === tag ? "default" : "outline"}
+                variant="outline"
                 size="sm"
-                onClick={() => setSearchTerm(tag)}
-                className="capitalize"
+                onClick={() => setLanguage(language === "pt" ? "en" : "pt")}
+                className="flex items-center gap-2"
               >
-                {tag}
+                <Languages className="w-4 h-4" />
+                {t.language}
               </Button>
-            ))}
-          </div>
-        </div>
+            </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8">
-          {filteredPoems.map((poem) => {
-            // **CORREÇÃO PARA HYDRATION MISMATCH**
-            // Verifica se o poema foi curtido apenas se o componente estiver montado
-            const isLiked = isMounted && likedPoems.includes(poem.id);
-            return (
-              <Card
-                key={poem.id}
-                className="cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] border-border/50 flex flex-col"
-                onClick={() => setSelectedPoem(poem)}
+            {/* Div para o título e subtítulo */}
+            <div className="text-center">
+              <h1 className="text-4xl font-serif text-foreground mb-4">
+                {t.title}
+              </h1>
+              <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl mx-auto">
+                {t.subtitle}
+              </p>
+            </div>
+          </header>
+
+          <div className="mb-12 flex flex-col sm:flex-row gap-4 sm:items-center">
+            <div className="relative flex-grow">
+              <Input
+                type="text"
+                placeholder={t.searchPlaceholder}
+                className="pl-10 h-8"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            </div>
+            <div className="flex items-center gap-2 overflow-x-auto pb-2">
+              <Button
+                variant={!searchTerm ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSearchTerm("")}
               >
-                <CardContent className="p-8 flex-grow flex flex-col">
-                  <h2 className="text-2xl font-serif text-foreground mb-4 leading-tight">
-                    {poem.title}
-                  </h2>
-                  <p className="text-muted-foreground leading-relaxed mb-6 line-clamp-3 flex-grow">
-                    {poem.preview}
-                  </p>
-                  <div className="mb-6 flex flex-wrap gap-2 items-center">
-                    <Tag className="w-4 h-4 text-muted-foreground" />
-                    {poem.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded-full capitalize cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSearchTerm(tag);
-                        }}
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="flex items-center justify-between mt-auto">
-                    <div className="flex items-center gap-2 text-primary text-sm font-medium">
-                      <BookOpen className="w-4 h-4" />
-                      <span>{t.readFull}</span>
+                {t.allTags}
+              </Button>
+              {allTags.map((tag) => (
+                <Button
+                  key={tag}
+                  variant={searchTerm === tag ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSearchTerm(tag)}
+                  className="capitalize"
+                >
+                  {tag}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8">
+            {filteredPoems.map((poem) => {
+              // **CORREÇÃO PARA HYDRATION MISMATCH**
+              // Verifica se o poema foi curtido apenas se o componente estiver montado
+              const isLiked = isMounted && likedPoems.includes(poem.id);
+              return (
+                <Card
+                  key={poem.id}
+                  className="cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] border-border/50 flex flex-col"
+                  onClick={() => setSelectedPoem(poem)}
+                >
+                  <CardContent className="p-8 flex-grow flex flex-col">
+                    <h2 className="text-2xl font-serif text-foreground mb-4 leading-tight">
+                      {poem.title}
+                    </h2>
+                    <p className="text-muted-foreground leading-relaxed mb-6 line-clamp-3 flex-grow">
+                      {poem.preview}
+                    </p>
+                    <div className="mb-6 flex flex-wrap gap-2 items-center">
+                      <Tag className="w-4 h-4 text-muted-foreground" />
+                      {poem.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded-full capitalize cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSearchTerm(tag);
+                          }}
+                        >
+                          {tag}
+                        </span>
+                      ))}
                     </div>
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center gap-1 text-muted-foreground">
+                    <div className="flex items-center justify-between mt-auto">
+                      <div className="flex items-center gap-2 text-primary text-sm font-medium">
+                        <BookOpen className="w-4 h-4" />
+                        <span>{t.readFull}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleLike(poem.id);
+                            }}
+                            aria-label="Curtir poema"
+                            className="w-8 h-8"
+                          >
+                            <Heart
+                              className={cn(
+                                "w-4 h-4",
+                                isLiked && "fill-current text-red-500"
+                              )}
+                            />
+                          </Button>
+                          <span className="text-sm w-4">
+                            {likeCounts[poem.id] || 0}
+                          </span>
+                        </div>
                         <Button
                           variant="ghost"
                           size="icon"
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleLike(poem.id);
+                            handleShare(poem);
                           }}
-                          aria-label="Curtir poema"
+                          aria-label="Compartilhar poema"
                           className="w-8 h-8"
                         >
-                          <Heart
-                            className={cn(
-                              "w-4 h-4",
-                              isLiked && "fill-current text-red-500"
-                            )}
-                          />
+                          <Share2 className="w-4 h-4 text-muted-foreground" />
                         </Button>
-                        <span className="text-sm w-4">
-                          {likeCounts[poem.id] || 0}
-                        </span>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleShare(poem);
-                        }}
-                        aria-label="Compartilhar poema"
-                        className="w-8 h-8"
-                      >
-                        <Share2 className="w-4 h-4 text-muted-foreground" />
-                      </Button>
                     </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+
+          <Dialog
+            open={!!selectedPoem}
+            onOpenChange={() => setSelectedPoem(null)}
+          >
+            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto p-6">
+              {selectedPoem && (
+                <>
+                  <DialogHeader>
+                    <DialogTitle className="text-3xl font-serif text-foreground mb-2 leading-tight">
+                      {selectedPoem.title}
+                    </DialogTitle>
+                    <DialogDescription className="sr-only">
+                      {selectedPoem.preview}
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  <div className="prose prose-lg max-w-none mt-4">
+                    <pre className="font-serif text-lg leading-relaxed text-foreground whitespace-pre-wrap font-normal">
+                      {selectedPoem.content}
+                    </pre>
                   </div>
-                </CardContent>
-              </Card>
-            );
-          })}
+
+                  {/* Botões de navegação */}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full z-10"
+                    onClick={handlePreviousPoem}
+                    disabled={currentPoemIndex === 0}
+                  >
+                    <ChevronLeft className="w-6 h-6" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full z-10"
+                    onClick={handleNextPoem}
+                    disabled={currentPoemIndex === filteredPoems.length - 1}
+                  >
+                    <ChevronRight className="w-6 h-6" />
+                  </Button>
+                </>
+              )}
+            </DialogContent>
+          </Dialog>
+          <Footer />
         </div>
-
-        <Dialog
-          open={!!selectedPoem}
-          onOpenChange={() => setSelectedPoem(null)}
-        >
-          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto p-6">
-            {selectedPoem && (
-              <>
-                <DialogHeader>
-                  <DialogTitle className="text-3xl font-serif text-foreground mb-2 leading-tight">
-                    {selectedPoem.title}
-                  </DialogTitle>
-                  <DialogDescription className="sr-only">
-                    {selectedPoem.preview}
-                  </DialogDescription>
-                </DialogHeader>
-
-                <div className="prose prose-lg max-w-none mt-4">
-                  <pre className="font-serif text-lg leading-relaxed text-foreground whitespace-pre-wrap font-normal">
-                    {selectedPoem.content}
-                  </pre>
-                </div>
-
-                {/* Botões de navegação */}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full z-10"
-                  onClick={handlePreviousPoem}
-                  disabled={currentPoemIndex === 0}
-                >
-                  <ChevronLeft className="w-6 h-6" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full z-10"
-                  onClick={handleNextPoem}
-                  disabled={currentPoemIndex === filteredPoems.length - 1}
-                >
-                  <ChevronRight className="w-6 h-6" />
-                </Button>
-              </>
-            )}
-          </DialogContent>
-        </Dialog>
-        <Footer />
       </div>
-    </div>
+    </>
   );
 }

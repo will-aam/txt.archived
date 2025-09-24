@@ -3,7 +3,9 @@ import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { Crimson_Text } from "next/font/google";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const crimsonText = Crimson_Text({
   subsets: ["latin"],
@@ -36,7 +38,12 @@ html {
 }
         `}</style>
       </head>
-      <body className={`${crimsonText.variable} antialiased`}>{children}</body>
+      <body>
+        {/* 2. Envolva o ThemeProvider com o SidebarProvider */}
+        <SidebarProvider>
+          <ThemeProvider defaultTheme="default">{children}</ThemeProvider>
+        </SidebarProvider>
+      </body>
     </html>
   );
 }

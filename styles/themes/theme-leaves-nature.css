@@ -1,0 +1,30 @@
+.theme-leaves-nature {
+  --background: oklch(0.97 0.02 145); /* verde bem claro, quase branco */
+  --foreground: oklch(0.2 0.04 145); /* verde escuro para texto */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2 0.04 145);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2 0.04 145);
+  --primary: oklch(0.6 0.12 145); /* verde folha médio */
+  --primary-foreground: oklch(0.98 0 145); /* quase branco */
+  --secondary: oklch(0.8 0.05 95); /* bege claro terroso */
+  --secondary-foreground: oklch(0.2 0.04 145);
+  --muted: oklch(0.9 0.02 145);
+  --muted-foreground: oklch(0.4 0.02 145);
+  --accent: oklch(0.75 0.12 110); /* verde musgo */
+  --accent-foreground: oklch(0.98 0 145);
+  --destructive: oklch(0.55 0.2 25); /* marrom avermelhado (terra) */
+  --destructive-foreground: oklch(0.98 0 145);
+  --border: oklch(0.88 0.02 145);
+  --input: oklch(0.9 0.02 145);
+  --ring: oklch(0.6 0.12 145);
+}
+
+.theme-leaves-nature body {
+  background-color: var(--background);
+  color: var(--foreground);
+
+  /* textura de papel reciclado */
+  background-image: url("https://www.transparenttextures.com/patterns/paper-fibers.png");
+  background-size: 300px 300px;
+}
