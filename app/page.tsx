@@ -7,7 +7,24 @@ import { Button } from "@/components/ui/button";
 import { poems } from "@/data/poems"; // Importe os poemas do novo arquivo
 import { Input } from "@/components/ui/input";
 import { Footer } from "@/components/ui/footer";
-import { BookOpen, Languages, Share2, Heart, Tag } from "lucide-react";
+import {
+  BookOpen,
+  Languages,
+  Share2,
+  Heart,
+  Tag,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { db } from "@/lib/firebase";
+import {
+  collection,
+  doc,
+  onSnapshot,
+  updateDoc,
+  increment,
+} from "firebase/firestore";
 
 interface Poem {
   id: number;
@@ -42,13 +59,51 @@ const translations = {
 
 const allTags = [...new Set(poems.flatMap((poem) => poem.tags))];
 
+const variants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? "100%" : "-100%",
+    opacity: 0,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+  },
+  exit: (direction: number) => ({
+    x: direction < 0 ? "100%" : "-100%",
+    opacity: 0,
+  }),
+};
+
 export default function PoetryBlog() {
   const [selectedPoem, setSelectedPoem] = useState<Poem | null>(null);
   const [language, setLanguage] = useState<"pt" | "en">("pt");
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredPoems, setFilteredPoems] = useState(poems);
+  const [direction, setDirection] = useState(0);
+  const [likeCounts, setLikeCounts] = useState<{ [key: number]: number }>({});
+  const [likedPoems, setLikedPoems] = useState<number[]>([]);
 
   const t = translations[language];
+
+  useEffect(() => {
+    const storedLikedPoems = localStorage.getItem("likedPoems");
+    if (storedLikedPoems) {
+      setLikedPoems(JSON.parse(storedLikedPoems));
+    }
+  }, []);
+
+  useEffect(() => {
+    const poemsCollection = collection(db, "poems");
+    const unsubscribe = onSnapshot(poemsCollection, (snapshot) => {
+      const counts: { [key: number]: number } = {};
+      snapshot.forEach((doc) => {
+        counts[Number(doc.id)] = doc.data().likes;
+      });
+      setLikeCounts(counts);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (!searchTerm) {
@@ -61,6 +116,28 @@ export default function PoetryBlog() {
       setFilteredPoems(newFilteredPoems);
     }
   }, [searchTerm]);
+
+  const handleLike = async (poemId: number) => {
+    if (likedPoems.includes(poemId)) {
+      return;
+    }
+
+    const newLikedPoems = [...likedPoems, poemId];
+    setLikedPoems(newLikedPoems);
+    localStorage.setItem("likedPoems", JSON.stringify(newLikedPoems));
+
+    const poemRef = doc(db, "poems", String(poemId));
+    try {
+      await updateDoc(poemRef, {
+        likes: increment(1),
+      });
+    } catch (error) {
+      console.error("Error updating likes:", error);
+      const revertedLikedPoems = likedPoems.filter((id) => id !== poemId);
+      setLikedPoems(revertedLikedPoems);
+      localStorage.setItem("likedPoems", JSON.stringify(revertedLikedPoems));
+    }
+  };
 
   const handleShare = async (poem: Poem) => {
     const shareData = {
@@ -85,6 +162,47 @@ export default function PoetryBlog() {
       }
     }
   };
+
+  const onDragEnd = (event: any, info: any) => {
+    const { offset, velocity } = info;
+    const swipe = Math.abs(offset.x);
+
+    if (swipe > 50) {
+      if (offset.x < 0) {
+        handleNextPoem();
+      } else {
+        handlePreviousPoem();
+      }
+    }
+  };
+
+  const handleNextPoem = () => {
+    setDirection(1);
+    if (selectedPoem) {
+      const currentIndex = filteredPoems.findIndex(
+        (p) => p.id === selectedPoem.id
+      );
+      if (currentIndex < filteredPoems.length - 1) {
+        setSelectedPoem(filteredPoems[currentIndex + 1]);
+      }
+    }
+  };
+
+  const handlePreviousPoem = () => {
+    setDirection(-1);
+    if (selectedPoem) {
+      const currentIndex = filteredPoems.findIndex(
+        (p) => p.id === selectedPoem.id
+      );
+      if (currentIndex > 0) {
+        setSelectedPoem(filteredPoems[currentIndex - 1]);
+      }
+    }
+  };
+
+  const currentPoemIndex = selectedPoem
+    ? filteredPoems.findIndex((p) => p.id === selectedPoem.id)
+    : -1;
 
   return (
     <div className="min-h-screen bg-background">
@@ -185,13 +303,18 @@ export default function PoetryBlog() {
                       size="icon"
                       onClick={(e) => {
                         e.stopPropagation();
-                        console.log("Clicou no coração!", poem.title);
+                        handleLike(poem.id);
                       }}
                       aria-label="Curtir poema"
                     >
-                      <Heart className="w-4 h-4 text-muted-foreground" />
+                      <Heart
+                        className={`w-4 h-4 text-muted-foreground ${
+                          likedPoems.includes(poem.id) &&
+                          "fill-current text-red-500"
+                        }`}
+                      />
                     </Button>
-
+                    <span>{likeCounts[poem.id] || 0}</span>
                     <Button
                       variant="ghost"
                       size="icon"
@@ -213,23 +336,61 @@ export default function PoetryBlog() {
           open={!!selectedPoem}
           onOpenChange={() => setSelectedPoem(null)}
         >
-          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto relative p-0">
+            <AnimatePresence initial={false} custom={direction}>
+              {selectedPoem && (
+                <motion.div
+                  key={selectedPoem.id}
+                  custom={direction}
+                  variants={variants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{
+                    x: { type: "spring", stiffness: 300, damping: 30 },
+                    opacity: { duration: 0.2 },
+                  }}
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  onDragEnd={onDragEnd}
+                  className="p-6"
+                >
+                  <h1 className="text-3xl font-serif text-foreground mb-8 leading-tight">
+                    {selectedPoem.title}
+                  </h1>
+                  <div className="prose prose-lg max-w-none">
+                    <pre className="font-serif text-lg leading-relaxed text-foreground whitespace-pre-wrap font-normal">
+                      {selectedPoem.content}
+                    </pre>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
             {selectedPoem && (
-              <div className="p-6">
-                <h1 className="text-3xl font-serif text-foreground mb-8 leading-tight">
-                  {selectedPoem.title}
-                </h1>
-
-                <div className="prose prose-lg max-w-none">
-                  <pre className="font-serif text-lg leading-relaxed text-foreground whitespace-pre-wrap font-normal">
-                    {selectedPoem.content}
-                  </pre>
-                </div>
-              </div>
+              <>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full z-10"
+                  onClick={handlePreviousPoem}
+                  disabled={currentPoemIndex === 0}
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full z-10"
+                  onClick={handleNextPoem}
+                  disabled={currentPoemIndex === filteredPoems.length - 1}
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </Button>
+              </>
             )}
           </DialogContent>
         </Dialog>
-        <Footer />{" "}
+        <Footer />
       </div>
     </div>
   );

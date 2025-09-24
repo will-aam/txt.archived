@@ -351,42 +351,42 @@ Um toque, um pouco de chão.`,
     preview: "A solitude que visto é capa e armadura...",
     tags: ["reflexão", "arrependimento", "dor"],
   },
-  // { MUDAR
-  //     id: 15,
-  //     title: "Ecos na Escuridão",
-  //     content: `Seguro o que me fere,
-  // Só para sentir que ainda estou aqui.
-  // Meu canto escuro é meu abrigo,
-  // Mas também é meu algoz,
-  // E as pessoas...
-  // Falsas, mascaradas,
-  // Um desfile de mentiras e suas danças envolventes
-  // de alegria disfarçada.
+  {
+    id: 15,
+    title: "Ecos na Escuridão",
+    content: `Seguro o que me fere,
+  Só para sentir que ainda estou aqui.
+  Meu canto escuro é meu abrigo,
+  Mas também é meu algoz,
+  E as pessoas...
+  Falsas, mascaradas,
+  Um desfile de mentiras e suas danças envolventes
+  de alegria disfarçada.
 
-  // E Se eu sorrir e disser que estou bem,
-  // Você vai acreditar?
-  // Ou, se confessar que está tudo desmoronando,
-  // Você vai fingir que se importa?
-  // Consegue ouvir?
-  // Essa confusão...
-  // É como um tremor,
-  // Um furacão interno,
-  // Uma náusea constante.
+  E Se eu sorrir e disser que estou bem,
+  Você vai acreditar?
+  Ou, se confessar que está tudo desmoronando,
+  Você vai fingir que se importa?
+  Consegue ouvir?
+  Essa confusão...
+  É como um tremor,
+  Um furacão interno,
+  Uma náusea constante.
 
-  // Será que fiquei tempo demais na escuridão?
-  // Ou é apenas o mundo girando rápido demais,
-  // Deixando-me tonto,
-  // Vendo amores que não existem...
-  // Eu me sinto mal, tão mal,
-  // Mas não quero sair.
-  // Quero apenas me afundar,
-  // Deixar as lágrimas caírem,
-  // Sem explicações,
-  // Sem redenção.`,
-  //     // date: "27 de Setembro, 2020",
-  //     preview: "E quando não tem mais tempo pro arrependimento...",
-  //     tags: ["reflexão", "arrependimento", "dor"],
-  //   },
+  Será que fiquei tempo demais na escuridão?
+  Ou é apenas o mundo girando rápido demais,
+  Deixando-me tonto,
+  Vendo amores que não existem...
+  Eu me sinto mal, tão mal,
+  Mas não quero sair.
+  Quero apenas me afundar,
+  Deixar as lágrimas caírem,
+  Sem explicações,
+  Sem redenção.`,
+    // date: "27 de Setembro, 2020",
+    preview: "E quando não tem mais tempo pro arrependimento...",
+    tags: ["reflexão", "arrependimento", "dor"],
+  },
   {
     id: 16,
     title: "Ecos na Escuridão",
