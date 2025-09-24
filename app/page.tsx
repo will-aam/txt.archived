@@ -11,7 +11,13 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Card, CardContent } from "@/components/ui/card";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { poems, Poem } from "@/data/poems";
 import { Input } from "@/components/ui/input";
@@ -355,38 +361,25 @@ export default function PoetryBlog() {
           open={!!selectedPoem}
           onOpenChange={() => setSelectedPoem(null)}
         >
-          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto relative p-0">
-            <AnimatePresence initial={false} custom={direction}>
-              {selectedPoem && (
-                <motion.div
-                  key={selectedPoem.id}
-                  custom={direction}
-                  variants={variants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{
-                    x: { type: "spring", stiffness: 300, damping: 30 },
-                    opacity: { duration: 0.2 },
-                  }}
-                  drag="x"
-                  dragConstraints={{ left: 0, right: 0 }}
-                  onDragEnd={onDragEnd}
-                  className="p-6"
-                >
-                  <h1 className="text-3xl font-serif text-foreground mb-8 leading-tight">
-                    {selectedPoem.title}
-                  </h1>
-                  <div className="prose prose-lg max-w-none">
-                    <pre className="font-serif text-lg leading-relaxed text-foreground whitespace-pre-wrap font-normal">
-                      {selectedPoem.content}
-                    </pre>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto p-6">
             {selectedPoem && (
               <>
+                <DialogHeader>
+                  <DialogTitle className="text-3xl font-serif text-foreground mb-2 leading-tight">
+                    {selectedPoem.title}
+                  </DialogTitle>
+                  <DialogDescription className="sr-only">
+                    {selectedPoem.preview}
+                  </DialogDescription>
+                </DialogHeader>
+
+                <div className="prose prose-lg max-w-none mt-4">
+                  <pre className="font-serif text-lg leading-relaxed text-foreground whitespace-pre-wrap font-normal">
+                    {selectedPoem.content}
+                  </pre>
+                </div>
+
+                {/* Botões de navegação */}
                 <Button
                   variant="ghost"
                   size="icon"
