@@ -21,6 +21,11 @@ import {
   Tag,
   ChevronLeft,
   ChevronRight,
+  // NOVOS ÍCONES
+  Copy,
+  MessageCircle,
+  Camera,
+  Twitter,
 } from "lucide-react";
 import {
   Pagination,
@@ -35,6 +40,15 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { ThemeSidebar } from "@/components/ui/theme-sidebar";
+// NOVO COMPONENTE DE MENU
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast"; // Hook para feedback visual (opcional, mas recomendado)
 
 const translations = {
   pt: {
@@ -46,6 +60,13 @@ const translations = {
     shareSuccess: "Link do blog copiado para a área de transferência!",
     searchPlaceholder: "Filtrar por tag...",
     allTags: "Todas",
+    // NOVAS TRADUÇÕES
+    copySuccess: "Poema copiado com sucesso!",
+    shareOnX: "Compartilhar no X",
+    shareOnWhatsApp: "Compartilhar no WhatsApp",
+    shareStory: "Compartilhar nos Stories",
+    copyPoem: "Copiar Poema",
+    copyLink: "Copiar Link",
   },
   en: {
     title: "Poetic Reflections",
@@ -56,28 +77,20 @@ const translations = {
     shareSuccess: "Blog link copied to clipboard!",
     searchPlaceholder: "Filter by tag...",
     allTags: "All",
+    // NOVAS TRADUÇÕES
+    copySuccess: "Poem copied successfully!",
+    shareOnX: "Share on X",
+    shareOnWhatsApp: "Share on WhatsApp",
+    shareStory: "Share to Stories",
+    copyPoem: "Copy Poem",
+    copyLink: "Copy Link",
   },
 };
 
 const allTags = [...new Set(poems.flatMap((poem) => poem.tags))];
-
-const variants = {
-  enter: (direction: number) => ({
-    x: direction > 0 ? "100%" : "-100%",
-    opacity: 0,
-  }),
-  center: {
-    x: 0,
-    opacity: 1,
-  },
-  exit: (direction: number) => ({
-    x: direction < 0 ? "100%" : "-100%",
-    opacity: 0,
-  }),
-};
-
 const ITEMS_PER_PAGE_DESKTOP = 9;
 const ITEMS_PER_PAGE_MOBILE = 6;
+const SITE_URL = "https://txtarchived.netlify.app"; // URL DO SEU SITE
 
 export default function PoetryBlog() {
   const [selectedPoem, setSelectedPoem] = useState<Poem | null>(null);
@@ -88,6 +101,7 @@ export default function PoetryBlog() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isClient, setIsClient] = useState(false);
   const isMobile = useIsMobile();
+  const { toast } = useToast(); // Hook para feedback visual
 
   const t = translations[language];
 
@@ -151,11 +165,56 @@ export default function PoetryBlog() {
 
   const paginationRange = getPaginationRange();
 
-  const handleShare = async (poem: Poem) => {
+  // --- NOVAS FUNÇÕES DE COMPARTILHAMENTO ---
+
+  const handleCopyText = async (text: string, successMessage: string) => {
+    if (!navigator.clipboard) {
+      alert(t.shareError);
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+      // Usando toast para feedback visual (mais elegante que alert)
+      toast({
+        title: "Sucesso!",
+        description: successMessage,
+      });
+    } catch (err) {
+      console.error("Falha ao copiar o texto: ", err);
+      alert(t.shareError);
+    }
+  };
+
+  const handleShareOnX = (poem: Poem) => {
+    const tweetText = `"${poem.title}"\n\n${poem.preview}`;
+    const tweetUrl = `${SITE_URL}?poem=${poem.id}`; // URL direta para o poema
+    const twitterIntentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      tweetText
+    )}&url=${encodeURIComponent(tweetUrl)}`;
+    window.open(twitterIntentUrl, "_blank");
+  };
+
+  const handleShareOnWhatsApp = (poem: Poem) => {
+    const shareText = `*${poem.title}*\n\n${poem.preview}\n\nLeia o poema completo em: ${SITE_URL}?poem=${poem.id}`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+    window.open(whatsappUrl, "_blank");
+  };
+
+  const handleShareStory = (poem: Poem) => {
+    // A ideia aqui é copiar o link e instruir o usuário a colar nos Stories
+    const storyUrl = `${SITE_URL}?poem=${poem.id}`;
+    handleCopyText(
+      storyUrl,
+      "Link para os Stories copiado! Agora cole no seu Story."
+    );
+  };
+
+  // Função genérica para compartilhar (mantida como fallback)
+  const handleNativeShare = async (poem: Poem) => {
     const shareData = {
       title: poem.title,
       text: `${poem.preview}\n\nLeia o poema completo em "Reflexões Poéticas".`,
-      url: window.location.href,
+      url: `${SITE_URL}?poem=${poem.id}`,
     };
     if (navigator.share) {
       try {
@@ -164,14 +223,11 @@ export default function PoetryBlog() {
         console.error("Erro ao compartilhar:", err);
       }
     } else {
-      try {
-        await navigator.clipboard.writeText(window.location.href);
-        alert(t.shareSuccess);
-      } catch (err) {
-        alert(t.shareError);
-      }
+      handleCopyText(shareData.url, t.shareSuccess);
     }
   };
+
+  // --- FIM DAS NOVAS FUNÇÕES ---
 
   const onDragEnd = (event: any, info: any) => {
     const { offset } = info;
@@ -308,18 +364,71 @@ export default function PoetryBlog() {
                       <span>{t.readFull}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleShare(poem);
-                        }}
-                        aria-label="Compartilhar poema"
-                        className="w-8 h-8"
-                      >
-                        <Share2 className="w-4 h-4 text-muted-foreground" />
-                      </Button>
+                      {/* NOVO MENU DE COMPARTILHAMENTO */}
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={(e) => e.stopPropagation()}
+                            aria-label="Opções de compartilhamento"
+                            className="w-8 h-8"
+                          >
+                            <Share2 className="w-4 h-4 text-muted-foreground" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleCopyText(poem.content, t.copySuccess);
+                            }}
+                          >
+                            <Copy className="mr-2 h-4 w-4" />
+                            <span>{t.copyPoem}</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleCopyText(
+                                `${SITE_URL}?poem=${poem.id}`,
+                                t.shareSuccess
+                              );
+                            }}
+                          >
+                            <Copy className="mr-2 h-4 w-4" />
+                            <span>{t.copyLink}</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleShareOnX(poem);
+                            }}
+                          >
+                            <Twitter className="mr-2 h-4 w-4" />
+                            <span>{t.shareOnX}</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleShareOnWhatsApp(poem);
+                            }}
+                          >
+                            <MessageCircle className="mr-2 h-4 w-4" />
+                            <span>{t.shareOnWhatsApp}</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleShareStory(poem);
+                            }}
+                          >
+                            <Camera className="mr-2 h-4 w-4" />
+                            <span>{t.shareStory}</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </div>
                 </CardContent>
@@ -404,6 +513,7 @@ export default function PoetryBlog() {
                     </pre>
                   </div>
 
+                  {/* Botões de navegação no modal */}
                   <Button
                     variant="ghost"
                     size="icon"
@@ -422,6 +532,58 @@ export default function PoetryBlog() {
                   >
                     <ChevronRight className="w-6 h-6" />
                   </Button>
+
+                  {/* Adicionando o menu de compartilhamento no modal também */}
+                  <div className="flex justify-center mt-6">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline">
+                          <Share2 className="w-4 h-4 mr-2" />
+                          Compartilhar este poema
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="center">
+                        <DropdownMenuItem
+                          onClick={() =>
+                            handleCopyText(selectedPoem.content, t.copySuccess)
+                          }
+                        >
+                          <Copy className="mr-2 h-4 w-4" />
+                          <span>{t.copyPoem}</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() =>
+                            handleCopyText(
+                              `${SITE_URL}?poem=${selectedPoem.id}`,
+                              t.shareSuccess
+                            )
+                          }
+                        >
+                          <Copy className="mr-2 h-4 w-4" />
+                          <span>{t.copyLink}</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={() => handleShareOnX(selectedPoem)}
+                        >
+                          <Twitter className="mr-2 h-4 w-4" />
+                          <span>{t.shareOnX}</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleShareOnWhatsApp(selectedPoem)}
+                        >
+                          <MessageCircle className="mr-2 h-4 w-4" />
+                          <span>{t.shareOnWhatsApp}</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleShareStory(selectedPoem)}
+                        >
+                          <Camera className="mr-2 h-4 w-4" />
+                          <span>{t.shareStory}</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </>
               )}
             </DialogContent>

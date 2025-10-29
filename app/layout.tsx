@@ -1,14 +1,13 @@
 // app/layout.tsx
 import type React from "react";
 import type { Metadata } from "next";
-
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
-
 import { Crimson_Text } from "next/font/google";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = GeistSans;
 const geistMono = GeistMono;
@@ -23,6 +22,7 @@ export const metadata: Metadata = {
   title: "Blog de Poesia",
   description:
     "Um espaço dedicado às palavras que nascem do silêncio e se transformam em versos",
+  generator: "v0.app",
 };
 
 export default function RootLayout({
@@ -40,6 +40,7 @@ export default function RootLayout({
         <ThemeProvider defaultTheme="default">
           <SidebarProvider>{children}</SidebarProvider>
         </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   );
