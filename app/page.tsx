@@ -1,39 +1,41 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  collection,
-  doc,
-  getDocs,
-  increment,
-  onSnapshot,
-  updateDoc,
-} from "firebase/firestore";
-import { db } from "@/lib/firebase";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "../components/ui/card";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { poems, Poem } from "@/data/poems";
-import { Input } from "@/components/ui/input";
-import { Footer } from "@/components/ui/footer";
+} from "../components/ui/dialog";
+import { Button } from "../components/ui/button";
+import { poems, Poem } from "../data/poems";
+import { Input } from "../components/ui/input";
+import { Footer } from "../components/ui/footer";
 import {
   BookOpen,
   Languages,
   Share2,
-  Heart,
   Tag,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+// NOVO: Importar componentes de paginação
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "../components/ui/pagination";
+// NOVO: Importar hook useIsMobile (assumindo que está em /hooks)
+import { useIsMobile } from "../hooks/use-mobile";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { ThemeSidebar } from "@/components/ui/theme-sidebar";
+import { cn } from "../lib/utils";
+import { ThemeSidebar } from "../components/ui/theme-sidebar";
 
 const translations = {
   pt: {
@@ -75,6 +77,10 @@ const variants = {
   }),
 };
 
+// NOVO: Definir quantos itens por página
+const ITEMS_PER_PAGE_DESKTOP = 9;
+const ITEMS_PER_PAGE_MOBILE = 6;
+
 export default function PoetryBlog() {
   const [selectedPoem, setSelectedPoem] = useState<Poem | null>(null);
   const [language, setLanguage] = useState<"pt" | "en">("pt");
@@ -82,47 +88,21 @@ export default function PoetryBlog() {
   const [filteredPoems, setFilteredPoems] = useState(poems);
   const [direction, setDirection] = useState(0);
 
-  // Estados para o sistema de curtidas
-  const [likeCounts, setLikeCounts] = useState<{ [key: number]: number }>({});
-  const [likedPoems, setLikedPoems] = useState<number[]>([]);
-
-  // **CORREÇÃO PARA HYDRATION MISMATCH**
-  // Estado para garantir que a lógica do cliente só rode após a montagem
-  const [isMounted, setIsMounted] = useState(false);
+  // NOVO: Estados para paginação e responsividade
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isClient, setIsClient] = useState(false);
+  const isMobile = useIsMobile();
 
   const t = translations[language];
 
-  // **CORREÇÃO PARA HYDRATION MISMATCH**
-  // Efeito que roda apenas uma vez no cliente, após a página ser "hidratada"
+  // NOVO: Efeito para saber quando o componente está no cliente
   useEffect(() => {
-    setIsMounted(true);
+    setIsClient(true);
   }, []);
 
-  // Efeito para buscar e ouvir as curtidas do Firebase
-  useEffect(() => {
-    const poemsCol = collection(db, "poems");
-    const unsubscribe = onSnapshot(poemsCol, (snapshot) => {
-      const counts: { [key: number]: number } = {};
-      snapshot.forEach((doc) => {
-        counts[Number(doc.id)] = doc.data().likes;
-      });
-      setLikeCounts(counts);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  // Efeito para carregar os poemas curtidos do localStorage
-  useEffect(() => {
-    // **CORREÇÃO PARA HYDRATION MISMATCH**
-    // Só executa se o componente estiver montado no navegador
-    if (isMounted) {
-      const storedLikes = localStorage.getItem("likedPoems");
-      if (storedLikes) {
-        setLikedPoems(JSON.parse(storedLikes));
-      }
-    }
-  }, [isMounted]);
+  // NOVO: Define a quantidade de itens com base no isMobile
+  const itemsPerPage =
+    isClient && isMobile ? ITEMS_PER_PAGE_MOBILE : ITEMS_PER_PAGE_DESKTOP;
 
   useEffect(() => {
     if (!searchTerm) {
@@ -134,30 +114,50 @@ export default function PoetryBlog() {
       );
       setFilteredPoems(newFilteredPoems);
     }
+    setCurrentPage(1); // NOVO: Reseta para a página 1 ao filtrar
   }, [searchTerm]);
 
-  const handleLike = async (poemId: number) => {
-    if (likedPoems.includes(poemId)) {
-      return; // Já curtiu, não faz nada
+  // NOVO: Lógica de paginação
+  const totalPages = Math.ceil(filteredPoems.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentPoems = filteredPoems.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      window.scrollTo(0, 0); // Opcional: rola para o topo ao mudar de página
+    }
+  };
+
+  // NOVO: Lógica para renderizar os números da paginação com "..."
+  const getPaginationRange = () => {
+    const delta = isMobile ? 1 : 2; // Quantos números antes/depois da pág. atual
+    const range = [];
+    for (
+      let i = Math.max(2, currentPage - delta);
+      i <= Math.min(totalPages - 1, currentPage + delta);
+      i++
+    ) {
+      range.push(i);
     }
 
-    // Atualiza o estado local e o localStorage
-    const newLikedPoems = [...likedPoems, poemId];
-    setLikedPoems(newLikedPoems);
-    localStorage.setItem("likedPoems", JSON.stringify(newLikedPoems));
+    if (currentPage - delta > 2) {
+      range.unshift("...");
+    }
+    if (currentPage + delta < totalPages - 1) {
+      range.push("...");
+    }
 
-    // Atualiza o estado visual otimistamente
-    setLikeCounts((prev) => ({
-      ...prev,
-      [poemId]: (prev[poemId] || 0) + 1,
-    }));
+    range.unshift(1);
+    if (totalPages > 1) {
+      range.push(totalPages);
+    }
 
-    // Atualiza no Firebase
-    const poemRef = doc(db, "poems", String(poemId));
-    await updateDoc(poemRef, {
-      likes: increment(1),
-    });
+    return [...new Set(range)]; // Remove duplicados se houver (ex: [1, 2] e totalPages=2)
   };
+
+  const paginationRange = getPaginationRange();
 
   const handleShare = async (poem: Poem) => {
     const shareData = {
@@ -252,7 +252,7 @@ export default function PoetryBlog() {
           </header>
 
           <div className="mb-12 flex flex-col sm:flex-row gap-4 sm:items-center">
-            <div className="relative flex-grow">
+            <div className="relative grow">
               <Input
                 type="text"
                 placeholder={t.searchPlaceholder}
@@ -285,85 +285,116 @@ export default function PoetryBlog() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8">
-            {filteredPoems.map((poem) => {
-              // **CORREÇÃO PARA HYDRATION MISMATCH**
-              // Verifica se o poema foi curtido apenas se o componente estiver montado
-              const isLiked = isMounted && likedPoems.includes(poem.id);
-              return (
-                <Card
-                  key={poem.id}
-                  className="cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] border-border/50 flex flex-col"
-                  onClick={() => setSelectedPoem(poem)}
-                >
-                  <CardContent className="p-8 flex-grow flex flex-col">
-                    <h2 className="text-2xl font-serif text-foreground mb-4 leading-tight">
-                      {poem.title}
-                    </h2>
-                    <p className="text-muted-foreground leading-relaxed mb-6 line-clamp-3 flex-grow">
-                      {poem.preview}
-                    </p>
-                    <div className="mb-6 flex flex-wrap gap-2 items-center">
-                      <Tag className="w-4 h-4 text-muted-foreground" />
-                      {poem.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded-full capitalize cursor-pointer"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSearchTerm(tag);
-                          }}
-                        >
-                          {tag}
-                        </span>
-                      ))}
+            {/* NOVO: Mapeia 'currentPoems' em vez de 'filteredPoems' */}
+            {currentPoems.map((poem) => (
+              <Card
+                key={poem.id}
+                className="cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] border-border/50 flex flex-col"
+                onClick={() => setSelectedPoem(poem)}
+              >
+                <CardContent className="p-8 grow flex flex-col">
+                  <h2 className="text-2xl font-serif text-foreground mb-4 leading-tight">
+                    {poem.title}
+                  </h2>
+                  <p className="text-muted-foreground leading-relaxed mb-6 line-clamp-3 grow">
+                    {poem.preview}
+                  </p>
+                  <div className="mb-6 flex flex-wrap gap-2 items-center">
+                    <Tag className="w-4 h-4 text-muted-foreground" />
+                    {poem.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded-full capitalize cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSearchTerm(tag);
+                        }}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex items-center justify-between mt-auto">
+                    <div className="flex items-center gap-2 text-primary text-sm font-medium">
+                      <BookOpen className="w-4 h-4" />
+                      <span>{t.readFull}</span>
                     </div>
-                    <div className="flex items-center justify-between mt-auto">
-                      <div className="flex items-center gap-2 text-primary text-sm font-medium">
-                        <BookOpen className="w-4 h-4" />
-                        <span>{t.readFull}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-1 text-muted-foreground">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleLike(poem.id);
-                            }}
-                            aria-label="Curtir poema"
-                            className="w-8 h-8"
-                          >
-                            <Heart
-                              className={cn(
-                                "w-4 h-4",
-                                isLiked && "fill-current text-red-500"
-                              )}
-                            />
-                          </Button>
-                          <span className="text-sm w-4">
-                            {likeCounts[poem.id] || 0}
-                          </span>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleShare(poem);
-                          }}
-                          aria-label="Compartilhar poema"
-                          className="w-8 h-8"
-                        >
-                          <Share2 className="w-4 h-4 text-muted-foreground" />
-                        </Button>
-                      </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleShare(poem);
+                        }}
+                        aria-label="Compartilhar poema"
+                        className="w-8 h-8"
+                      >
+                        <Share2 className="w-4 h-4 text-muted-foreground" />
+                      </Button>
                     </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
+
+          {/* NOVO: Componente de Paginação */}
+          {totalPages > 1 && (
+            <Pagination className="mt-12">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handlePageChange(currentPage - 1);
+                    }}
+                    aria-disabled={currentPage === 1}
+                    className={
+                      currentPage === 1 ? "pointer-events-none opacity-50" : ""
+                    }
+                  />
+                </PaginationItem>
+
+                {paginationRange.map((page, index) => (
+                  <PaginationItem key={index}>
+                    {typeof page === "string" ? (
+                      <PaginationEllipsis />
+                    ) : (
+                      <PaginationLink
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handlePageChange(page);
+                        }}
+                        isActive={currentPage === page}
+                      >
+                        {page}
+                      </PaginationLink>
+                    )}
+                  </PaginationItem>
+                ))}
+
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handlePageChange(currentPage + 1);
+                    }}
+                    aria-disabled={currentPage === totalPages}
+                    className={
+                      currentPage === totalPages
+                        ? "pointer-events-none opacity-50"
+                        : ""
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
+          {/* Fim do Componente de Paginação */}
 
           <Dialog
             open={!!selectedPoem}
