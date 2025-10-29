@@ -56,7 +56,7 @@ const translations = {
     language: "English",
     shareError: "Seu navegador não suporta o compartilhamento nativo.",
     shareSuccess: "Link do blog copiado para a área de transferência!",
-    searchPlaceholder: "Filtrar por tag...",
+    searchPlaceholder: "Filtro por tag",
     allTags: "Todas",
     copySuccess: "Poema copiado com sucesso!",
     shareOnX: "Compartilhar no X",
