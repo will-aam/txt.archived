@@ -1,8 +1,6 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-
-// Adicione os nomes de classe de todos os seus temas aqui
 type Theme = "default" | "theme-starry-night";
 
 interface ThemeProviderState {
@@ -27,10 +25,8 @@ export function ThemeProvider({
   useEffect(() => {
     const root = window.document.documentElement;
 
-    // Limpa as classes de tema antigas antes de adicionar a nova
     root.classList.remove("default", "theme-starry-night");
 
-    // Adiciona a classe do tema atual ao elemento <html>
     root.classList.add(theme);
   }, [theme]);
 
@@ -46,7 +42,6 @@ export function ThemeProvider({
   );
 }
 
-// Hook para usar o tema em outros componentes (como o sidebar)
 export const useTheme = () => {
   const context = useContext(ThemeProviderContext);
   if (context === undefined) {
