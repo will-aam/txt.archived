@@ -1,18 +1,19 @@
+// app/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
-import { Card, CardContent } from "../components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "../components/ui/dialog";
-import { Button } from "../components/ui/button";
-import { poems, Poem } from "../data/poems";
-import { Input } from "../components/ui/input";
-import { Footer } from "../components/ui/footer";
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { poems, Poem } from "@/data/poems";
+import { Input } from "@/components/ui/input";
+import { Footer } from "@/components/ui/footer";
 import {
   BookOpen,
   Languages,
@@ -21,7 +22,6 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-// NOVO: Importar componentes de paginação
 import {
   Pagination,
   PaginationContent,
@@ -30,12 +30,11 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "../components/ui/pagination";
-// NOVO: Importar hook useIsMobile (assumindo que está em /hooks)
-import { useIsMobile } from "../hooks/use-mobile";
+} from "@/components/ui/pagination";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "../lib/utils";
-import { ThemeSidebar } from "../components/ui/theme-sidebar";
+import { cn } from "@/lib/utils";
+import { ThemeSidebar } from "@/components/ui/theme-sidebar";
 
 const translations = {
   pt: {
@@ -77,7 +76,6 @@ const variants = {
   }),
 };
 
-// NOVO: Definir quantos itens por página
 const ITEMS_PER_PAGE_DESKTOP = 9;
 const ITEMS_PER_PAGE_MOBILE = 6;
 
@@ -87,20 +85,16 @@ export default function PoetryBlog() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredPoems, setFilteredPoems] = useState(poems);
   const [direction, setDirection] = useState(0);
-
-  // NOVO: Estados para paginação e responsividade
   const [currentPage, setCurrentPage] = useState(1);
   const [isClient, setIsClient] = useState(false);
   const isMobile = useIsMobile();
 
   const t = translations[language];
 
-  // NOVO: Efeito para saber quando o componente está no cliente
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  // NOVO: Define a quantidade de itens com base no isMobile
   const itemsPerPage =
     isClient && isMobile ? ITEMS_PER_PAGE_MOBILE : ITEMS_PER_PAGE_DESKTOP;
 
@@ -114,10 +108,9 @@ export default function PoetryBlog() {
       );
       setFilteredPoems(newFilteredPoems);
     }
-    setCurrentPage(1); // NOVO: Reseta para a página 1 ao filtrar
+    setCurrentPage(1);
   }, [searchTerm]);
 
-  // NOVO: Lógica de paginação
   const totalPages = Math.ceil(filteredPoems.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -126,13 +119,12 @@ export default function PoetryBlog() {
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
-      window.scrollTo(0, 0); // Opcional: rola para o topo ao mudar de página
+      window.scrollTo(0, 0);
     }
   };
 
-  // NOVO: Lógica para renderizar os números da paginação com "..."
   const getPaginationRange = () => {
-    const delta = isMobile ? 1 : 2; // Quantos números antes/depois da pág. atual
+    const delta = isMobile ? 1 : 2;
     const range = [];
     for (
       let i = Math.max(2, currentPage - delta);
@@ -154,7 +146,7 @@ export default function PoetryBlog() {
       range.push(totalPages);
     }
 
-    return [...new Set(range)]; // Remove duplicados se houver (ex: [1, 2] e totalPages=2)
+    return [...new Set(range)];
   };
 
   const paginationRange = getPaginationRange();
@@ -222,12 +214,10 @@ export default function PoetryBlog() {
     : -1;
 
   return (
-    <>
-      <ThemeSidebar />
+    <ThemeSidebar>
       <div className="min-h-screen bg-background">
         <div className="max-w-4xl mx-auto px-6 py-12">
           <header className="mb-16">
-            {/* Div para o botão de tradução */}
             <div className="flex justify-end mb-4">
               <Button
                 variant="outline"
@@ -240,7 +230,6 @@ export default function PoetryBlog() {
               </Button>
             </div>
 
-            {/* Div para o título e subtítulo */}
             <div className="text-center">
               <h1 className="text-4xl font-serif text-foreground mb-4">
                 {t.title}
@@ -285,7 +274,6 @@ export default function PoetryBlog() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8">
-            {/* NOVO: Mapeia 'currentPoems' em vez de 'filteredPoems' */}
             {currentPoems.map((poem) => (
               <Card
                 key={poem.id}
@@ -339,7 +327,6 @@ export default function PoetryBlog() {
             ))}
           </div>
 
-          {/* NOVO: Componente de Paginação */}
           {totalPages > 1 && (
             <Pagination className="mt-12">
               <PaginationContent>
@@ -394,7 +381,6 @@ export default function PoetryBlog() {
               </PaginationContent>
             </Pagination>
           )}
-          {/* Fim do Componente de Paginação */}
 
           <Dialog
             open={!!selectedPoem}
@@ -418,7 +404,6 @@ export default function PoetryBlog() {
                     </pre>
                   </div>
 
-                  {/* Botões de navegação */}
                   <Button
                     variant="ghost"
                     size="icon"
@@ -444,6 +429,6 @@ export default function PoetryBlog() {
           <Footer />
         </div>
       </div>
-    </>
+    </ThemeSidebar>
   );
 }

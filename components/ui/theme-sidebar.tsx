@@ -1,3 +1,4 @@
+// components/ui/theme-sidebar.tsx
 "use client";
 
 import {
@@ -9,27 +10,21 @@ import {
   SidebarMenuButton,
   SidebarTrigger,
   SidebarGroupLabel,
+  SidebarInset,
 } from "@/components/ui/sidebar";
 import { useTheme } from "@/components/theme-provider";
 import { Paintbrush, Sun, MoonStar } from "lucide-react";
 
-export function ThemeSidebar() {
+export function ThemeSidebar({ children }: { children: React.ReactNode }) {
   const { theme, setTheme } = useTheme();
 
   return (
     <>
-      {/* Botão que aparece no mobile e no desktop quando a sidebar está fechada */}
-      <div className="fixed top-4 left-4 z-50">
-        <SidebarTrigger>
-          <Paintbrush className="w-4 h-4" />
-        </SidebarTrigger>
-      </div>
-
       <Sidebar>
+        <SidebarHeader>
+          <SidebarGroupLabel>Temas</SidebarGroupLabel>
+        </SidebarHeader>
         <SidebarContent>
-          <SidebarHeader>
-            <SidebarGroupLabel>Temas</SidebarGroupLabel>
-          </SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
@@ -55,6 +50,18 @@ export function ThemeSidebar() {
           </SidebarMenu>
         </SidebarContent>
       </Sidebar>
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+          <SidebarTrigger className="-ml-1">
+            <Paintbrush className="w-4 h-4" />
+          </SidebarTrigger>
+          <div className="flex items-center gap-2">
+            <Paintbrush className="w-4 h-4" />
+            <span>Temas</span>
+          </div>
+        </header>
+        <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
+      </SidebarInset>
     </>
   );
 }

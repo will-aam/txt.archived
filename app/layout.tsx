@@ -1,3 +1,4 @@
+// app/layout.tsx
 import type React from "react";
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
@@ -39,10 +40,9 @@ html {
         `}</style>
       </head>
       <body>
-        {/* 2. Envolva o ThemeProvider com o SidebarProvider */}
-        <SidebarProvider>
-          <ThemeProvider defaultTheme="default">{children}</ThemeProvider>
-        </SidebarProvider>
+        <ThemeProvider defaultTheme="default">
+          <SidebarProvider>{children}</SidebarProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
