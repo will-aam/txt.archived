@@ -37,7 +37,12 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${crimsonText.variable}`}
     >
       <body className={geistSans.className}>
-        <ThemeProvider defaultTheme="default">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="default"
+          enableSystem
+          disableTransitionOnChange
+        >
           <SidebarProvider>{children}</SidebarProvider>
         </ThemeProvider>
         <Toaster />

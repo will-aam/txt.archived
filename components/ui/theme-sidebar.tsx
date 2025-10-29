@@ -1,6 +1,7 @@
 // components/ui/theme-sidebar.tsx
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -12,7 +13,7 @@ import {
   SidebarGroupLabel,
   SidebarInset,
 } from "@/components/ui/sidebar";
-import { useTheme } from "@/components/theme-provider";
+import { useTheme } from "next-themes";
 import {
   Paintbrush,
   Sun,
@@ -22,10 +23,22 @@ import {
   Minus,
   Monitor,
   Palette,
+  Laptop,
 } from "lucide-react";
 
 export function ThemeSidebar({ children }: { children: React.ReactNode }) {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, systemTheme } = useTheme();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const handleThemeChange = (newTheme: string) => {
+    setTheme(newTheme);
+  };
+
+  const currentTheme = isMounted ? theme : "default";
 
   return (
     <>
@@ -37,8 +50,8 @@ export function ThemeSidebar({ children }: { children: React.ReactNode }) {
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
-                onClick={() => setTheme("default")}
-                isActive={theme === "default"}
+                onClick={() => handleThemeChange("default")}
+                isActive={currentTheme === "default"}
                 tooltip="Tema Padrão"
               >
                 <Sun className="w-4 h-4" />
@@ -47,8 +60,8 @@ export function ThemeSidebar({ children }: { children: React.ReactNode }) {
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton
-                onClick={() => setTheme("theme-starry-night")}
-                isActive={theme === "theme-starry-night"}
+                onClick={() => handleThemeChange("theme-starry-night")}
+                isActive={currentTheme === "theme-starry-night"}
                 tooltip="Tema Noite Estrelada"
               >
                 <MoonStar className="w-4 h-4" />
@@ -57,8 +70,8 @@ export function ThemeSidebar({ children }: { children: React.ReactNode }) {
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton
-                onClick={() => setTheme("theme-futurism")}
-                isActive={theme === "theme-futurism"}
+                onClick={() => handleThemeChange("theme-futurism")}
+                isActive={currentTheme === "theme-futurism"}
                 tooltip="Tema Futurismo"
               >
                 <Zap className="w-4 h-4" />
@@ -67,8 +80,8 @@ export function ThemeSidebar({ children }: { children: React.ReactNode }) {
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton
-                onClick={() => setTheme("theme-leaves-nature")}
-                isActive={theme === "theme-leaves-nature"}
+                onClick={() => handleThemeChange("theme-leaves-nature")}
+                isActive={currentTheme === "theme-leaves-nature"}
                 tooltip="Tema Folhas da Natureza"
               >
                 <Leaf className="w-4 h-4" />
@@ -77,8 +90,8 @@ export function ThemeSidebar({ children }: { children: React.ReactNode }) {
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton
-                onClick={() => setTheme("theme-minimal-mono")}
-                isActive={theme === "theme-minimal-mono"}
+                onClick={() => handleThemeChange("theme-minimal-mono")}
+                isActive={currentTheme === "theme-minimal-mono"}
                 tooltip="Tema Minimalista Mono"
               >
                 <Minus className="w-4 h-4" />
@@ -87,8 +100,8 @@ export function ThemeSidebar({ children }: { children: React.ReactNode }) {
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton
-                onClick={() => setTheme("theme-retro")}
-                isActive={theme === "theme-retro"}
+                onClick={() => handleThemeChange("theme-retro")}
+                isActive={currentTheme === "theme-retro"}
                 tooltip="Tema Retrô"
               >
                 <Monitor className="w-4 h-4" />
@@ -97,12 +110,22 @@ export function ThemeSidebar({ children }: { children: React.ReactNode }) {
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton
-                onClick={() => setTheme("theme-soft-watercolor")}
-                isActive={theme === "theme-soft-watercolor"}
+                onClick={() => handleThemeChange("theme-soft-watercolor")}
+                isActive={currentTheme === "theme-soft-watercolor"}
                 tooltip="Tema Aquarela Suave"
               >
                 <Palette className="w-4 h-4" />
                 <span>Aquarela Suave</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={() => handleThemeChange("system")}
+                isActive={currentTheme === "system"}
+                tooltip="Tema do Sistema"
+              >
+                <Laptop className="w-4 h-4" />
+                <span>Sistema</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
