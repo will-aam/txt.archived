@@ -21,7 +21,6 @@ import {
   Tag,
   ChevronLeft,
   ChevronRight,
-  // NOVOS ÍCONES
   Copy,
   MessageCircle,
   Camera,
@@ -40,7 +39,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { ThemeSidebar } from "@/components/ui/theme-sidebar";
-// NOVO COMPONENTE DE MENU
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -48,7 +46,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useToast } from "@/hooks/use-toast"; // Hook para feedback visual (opcional, mas recomendado)
+import { useToast } from "@/hooks/use-toast";
 
 const translations = {
   pt: {
@@ -60,7 +58,6 @@ const translations = {
     shareSuccess: "Link do blog copiado para a área de transferência!",
     searchPlaceholder: "Filtrar por tag...",
     allTags: "Todas",
-    // NOVAS TRADUÇÕES
     copySuccess: "Poema copiado com sucesso!",
     shareOnX: "Compartilhar no X",
     shareOnWhatsApp: "Compartilhar no WhatsApp",
@@ -77,7 +74,6 @@ const translations = {
     shareSuccess: "Blog link copied to clipboard!",
     searchPlaceholder: "Filter by tag...",
     allTags: "All",
-    // NOVAS TRADUÇÕES
     copySuccess: "Poem copied successfully!",
     shareOnX: "Share on X",
     shareOnWhatsApp: "Share on WhatsApp",
@@ -90,7 +86,8 @@ const translations = {
 const allTags = [...new Set(poems.flatMap((poem) => poem.tags))];
 const ITEMS_PER_PAGE_DESKTOP = 9;
 const ITEMS_PER_PAGE_MOBILE = 6;
-const SITE_URL = "https://txtarchived.netlify.app"; // URL DO SEU SITE
+const SITE_URL = "https://txtarchived.netlify.app";
+const SIGNATURE = "\n\n© 2025 txt.archived - written by: @will.aam";
 
 export default function PoetryBlog() {
   const [selectedPoem, setSelectedPoem] = useState<Poem | null>(null);
@@ -101,7 +98,7 @@ export default function PoetryBlog() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isClient, setIsClient] = useState(false);
   const isMobile = useIsMobile();
-  const { toast } = useToast(); // Hook para feedback visual
+  const { toast } = useToast();
 
   const t = translations[language];
 
@@ -165,16 +162,15 @@ export default function PoetryBlog() {
 
   const paginationRange = getPaginationRange();
 
-  // --- NOVAS FUNÇÕES DE COMPARTILHAMENTO ---
-
   const handleCopyText = async (text: string, successMessage: string) => {
     if (!navigator.clipboard) {
       alert(t.shareError);
       return;
     }
     try {
-      await navigator.clipboard.writeText(text);
-      // Usando toast para feedback visual (mais elegante que alert)
+      const textWithSignature = `${text}${SIGNATURE}`;
+      await navigator.clipboard.writeText(textWithSignature);
+
       toast({
         title: "Sucesso!",
         description: successMessage,
@@ -186,8 +182,8 @@ export default function PoetryBlog() {
   };
 
   const handleShareOnX = (poem: Poem) => {
-    const tweetText = `"${poem.title}"\n\n${poem.preview}`;
-    const tweetUrl = `${SITE_URL}?poem=${poem.id}`; // URL direta para o poema
+    const tweetText = `"${poem.title}"\n\n${poem.preview}${SIGNATURE}`;
+    const tweetUrl = `${SITE_URL}?poem=${poem.id}`;
     const twitterIntentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
       tweetText
     )}&url=${encodeURIComponent(tweetUrl)}`;
@@ -195,13 +191,12 @@ export default function PoetryBlog() {
   };
 
   const handleShareOnWhatsApp = (poem: Poem) => {
-    const shareText = `*${poem.title}*\n\n${poem.preview}\n\nLeia o poema completo em: ${SITE_URL}?poem=${poem.id}`;
+    const shareText = `*${poem.title}*\n\n${poem.preview}${SIGNATURE}\n\nLeia o poema completo em: ${SITE_URL}?poem=${poem.id}`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
     window.open(whatsappUrl, "_blank");
   };
 
   const handleShareStory = (poem: Poem) => {
-    // A ideia aqui é copiar o link e instruir o usuário a colar nos Stories
     const storyUrl = `${SITE_URL}?poem=${poem.id}`;
     handleCopyText(
       storyUrl,
@@ -209,11 +204,10 @@ export default function PoetryBlog() {
     );
   };
 
-  // Função genérica para compartilhar (mantida como fallback)
   const handleNativeShare = async (poem: Poem) => {
     const shareData = {
       title: poem.title,
-      text: `${poem.preview}\n\nLeia o poema completo em "Reflexões Poéticas".`,
+      text: `${poem.preview}${SIGNATURE}\n\nLeia o poema completo em "Reflexões Poéticas".`,
       url: `${SITE_URL}?poem=${poem.id}`,
     };
     if (navigator.share) {
@@ -226,8 +220,6 @@ export default function PoetryBlog() {
       handleCopyText(shareData.url, t.shareSuccess);
     }
   };
-
-  // --- FIM DAS NOVAS FUNÇÕES ---
 
   const onDragEnd = (event: any, info: any) => {
     const { offset } = info;
@@ -364,7 +356,6 @@ export default function PoetryBlog() {
                       <span>{t.readFull}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      {/* NOVO MENU DE COMPARTILHAMENTO */}
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
@@ -513,7 +504,6 @@ export default function PoetryBlog() {
                     </pre>
                   </div>
 
-                  {/* Botões de navegação no modal */}
                   <Button
                     variant="ghost"
                     size="icon"
@@ -533,7 +523,6 @@ export default function PoetryBlog() {
                     <ChevronRight className="w-6 h-6" />
                   </Button>
 
-                  {/* Adicionando o menu de compartilhamento no modal também */}
                   <div className="flex justify-center mt-6">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>

@@ -3,7 +3,7 @@ import { Instagram } from "lucide-react";
 export function Footer() {
   const year = new Date().getFullYear();
   // IG
-  const instagramUrl = "https://www.instagram.com/txt.archived";
+  const instagramUrl = "https://www.instagram.com/will.aam";
 
   return (
     <footer className="mt-16 border-t border-border/50 py-8 text-center text-muted-foreground">
