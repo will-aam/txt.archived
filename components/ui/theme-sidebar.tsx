@@ -13,7 +13,16 @@ import {
   SidebarInset,
 } from "@/components/ui/sidebar";
 import { useTheme } from "@/components/theme-provider";
-import { Paintbrush, Sun, MoonStar } from "lucide-react";
+import {
+  Paintbrush,
+  Sun,
+  MoonStar,
+  Zap,
+  Leaf,
+  Minus,
+  Monitor,
+  Palette,
+} from "lucide-react";
 
 export function ThemeSidebar({ children }: { children: React.ReactNode }) {
   const { theme, setTheme } = useTheme();
@@ -46,7 +55,56 @@ export function ThemeSidebar({ children }: { children: React.ReactNode }) {
                 <span>Noite Estrelada</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
-            {/* Adicione novos temas aqui, seguindo o mesmo padrão */}
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={() => setTheme("theme-futurism")}
+                isActive={theme === "theme-futurism"}
+                tooltip="Tema Futurismo"
+              >
+                <Zap className="w-4 h-4" />
+                <span>Futurismo</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={() => setTheme("theme-leaves-nature")}
+                isActive={theme === "theme-leaves-nature"}
+                tooltip="Tema Folhas da Natureza"
+              >
+                <Leaf className="w-4 h-4" />
+                <span>Folhas da Natureza</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={() => setTheme("theme-minimal-mono")}
+                isActive={theme === "theme-minimal-mono"}
+                tooltip="Tema Minimalista Mono"
+              >
+                <Minus className="w-4 h-4" />
+                <span>Minimalista Mono</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={() => setTheme("theme-retro")}
+                isActive={theme === "theme-retro"}
+                tooltip="Tema Retrô"
+              >
+                <Monitor className="w-4 h-4" />
+                <span>Retrô</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={() => setTheme("theme-soft-watercolor")}
+                isActive={theme === "theme-soft-watercolor"}
+                tooltip="Tema Aquarela Suave"
+              >
+                <Palette className="w-4 h-4" />
+                <span>Aquarela Suave</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarContent>
       </Sidebar>

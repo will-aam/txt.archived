@@ -1,7 +1,14 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-type Theme = "default" | "theme-starry-night";
+type Theme =
+  | "default"
+  | "theme-starry-night"
+  | "theme-futurism"
+  | "theme-leaves-nature"
+  | "theme-minimal-mono"
+  | "theme-retro"
+  | "theme-soft-watercolor";
 
 interface ThemeProviderState {
   theme: Theme;

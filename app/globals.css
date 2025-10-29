@@ -5,6 +5,11 @@
 /* --- Importação dos Temas --- */
 @import "../styles/themes/default.css";
 @import "../styles/themes/starry-night.css";
+@import "../styles/themes/theme-futurism.css";
+@import "../styles/themes/theme-leaves-nature.css";
+@import "../styles/themes/theme-minimal-mono.css";
+@import "../styles/themes/theme-retro.css";
+@import "../styles/themes/theme-soft-watercolor.css";
 
 @theme inline {
   --color-background: var(--background);
@@ -48,5 +53,34 @@
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  /* --- Estilização da Barra de Rolagem --- */
+
+  /* Para Firefox */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--muted-foreground) var(--muted);
+  }
+
+  /* Para Navegadores WebKit (Chrome, Safari, Edge, etc.) */
+  ::-webkit-scrollbar-track {
+    /* Usando muted (sem transparência) ou transparent */
+    background: var(--muted);
+    /* background: transparent; */ /* Alternativa */
+    border-radius: var(--radius-lg);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    /* Usando muted-foreground para maior contraste */
+    background-color: var(--muted-foreground);
+    border-radius: var(--radius-lg);
+    /* Adicionar uma borda sutil pode ajudar a definir */
+    border: 2px solid var(--background); /* Usa a cor de fundo para criar espaço */
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    /* Usando primary, que deve ter bom contraste */
+    background-color: var(--primary);
   }
 }
