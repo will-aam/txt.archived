@@ -1091,4 +1091,60 @@ e tudo perde a cor...
       "É pesada a bala no crânio, que estoura os miolos, que apelidei de amor, moça do sorriso que é um tiro...",
     tags: ["reflexão"],
   },
+
+  {
+    id: 41,
+    title: "Solidus",
+    content: `Sentir falta
+Estranho
+Doi muito sabe
+Não posso dizer todos, mas quando coloco meu coração em algo ou em alguém
+e por algum motivo
+esse algo ou alguém some
+é como se levasse um pedaço do meu coração
+Nunca sentir uma dor no coração de verdade, então não sei como é
+Mas quando alguém leva um pedaço do meu coração, depois de alguns momentos
+quando a ficha cai
+sinto uma desconforto real no meu peito
+parece até ansiedade
+mas é diferente
+
+Queira ser apatico, se ter sentimentos e emoções me faz ser mais humano
+eu queria ser uma pedra
+sem forma
+sem próposito
+sem dor
+sem caos
+sem pecado
+um objeto inanimado não é feliz, mas também nunca foi e jamais será triste.
+
+Desejar ser uma pedra doi
+queria ser normal, mas sou caracterizado como estranho
+Não é que as pessoas não me entendem
+É que talvez eu seja muito diferente, e não me encaixo nos lugares que estou hoje
+
+E mesmo com muitos em minha volta eu não posso ser eu mesmo
+e por isso me sinto sozinho
+E quando tenho interação social, preciso me conter
+se não serei estranho, mas isso me deixa muito cansado
+
+E ai a saldade bate de volta, pois as unicas pessoas que eu tinha que eu não precisava me mudar morreu, ou foram embora.
+
+E então eu fico mais triste.
+
+Fui obrigado a amar a solidão.
+E agora ela faz parte de mim, mas não por completo.
+Hoje tem um conflito entre querer alguem e querer ficar sozinho.
+
+As vezes eu prefereria morrer, não digo que é depressão
+Só uma conclusão logica que cheguei pela usencia de afeto e compreensão
+Afinal, não iria mais sentir medo de perder as pessoas que amo, não sentiria mais a pressão que é ter que fazer o dobro pra conquistar o minino da dgnidade humana, imagina não ter mais que fazer escolhas e principalmente nunca mais sentir falta.
+
+acho que eu tentei me acostumar a viver sem, mas não ta funcionando, isso porque
+Ainda doi, ainda sinto falta...
+
+`,
+    preview: `Sinto falta...`,
+    tags: ["reflexão"],
+  },
 ];
