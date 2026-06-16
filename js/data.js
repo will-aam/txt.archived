@@ -1,12 +1,4 @@
-export interface Poem {
-  id: number;
-  title: string;
-  content: string;
-  // date: string;
-  preview: string;
-  tags: string[];
-}
-export const poems: Poem[] = [
+export const poems = [
   {
     id: 1,
     title: "Possibilities",
@@ -19,8 +11,7 @@ Acelerar pra longe desses problemas,
 Tudo que soa negativo deixa no mudo
 Que "paz e amor" vire nosso lema.`,
     // date: "25 de Maio, 2020",
-    preview:
-      "Coração acelera igual motor de carro, Cê me deixa louco a cada batida...",
+    preview: "Coração acelera igual motor de carro, Cê me deixa louco a...",
     tags: ["amor", "romance", "esperança"],
   },
   {
@@ -58,7 +49,7 @@ Que sua jornada seja tecida com fios de esperança,
 E que seu sorriso seja sempre tua mais bela dança.`,
     // date: "22 de Fevereiro, 2024",
     preview: "Moça, você é radiante seus sorrisos colorem suas cicatrizes...",
-    tags: ["autoestima", "empoderamento", "beleza"],
+    tags: ["autoestima", "beleza"],
   },
   {
     id: 4,

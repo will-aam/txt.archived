@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arquivo de Poesias</title>
+
+    <!-- Importando a fonte Sora -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+        <div class="container">
+            <h1>Minhas Poesias</h1>
+            <p>Um espaço limpo e suave para leitura.</p>
+            
+            <!-- Botões de escolha de tema -->
+            <div class="theme-switcher">
+                <button class="theme-btn active" data-theme="default" title="Papel em Branco">📄</button>
+                <button class="theme-btn" data-theme="theme-sepia" title="Folha Antiga">📜</button>
+                <button class="theme-btn" data-theme="theme-night" title="Noite">🌙</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <!-- NOVA ESTRUTURA: Filtro de Tags -->
+        <section class="filtros-container">
+            <p class="filtros-titulo">Filtrar por: <span id="tag-ativa">Todas as poesias</span></p>
+            <div id="lista-filtros" class="tags-filtro">
+                <!-- O JavaScript vai injetar os botões de filtro aqui -->
+            </div>
+        </section>
+
+        <!-- Aqui continua a lista de poemas que já existia -->
+        <section id="lista-poemas" class="poemas-grid"></section>
+    </main>
+  <aside id="leitor-lateral" class="leitor-lateral">
+        <div class="leitor-conteudo container">
+            <button id="fechar-leitor" class="fechar-btn" aria-label="Fechar leitura">🔙 Voltar</button>
+            <article id="leitor-poema"></article>
+        </article>
+      </div>
+    </aside>
+
+    <footer class="site-footer container">
+      <p>&copy; 2026 - Feito com simplicidade.</p>
+    </footer>
+
+<script type="module" src="js/main.js"></script>
+    <script type="module" src="js/theme.js"></script> <!-- NOVO -->
+</body>
+</html>

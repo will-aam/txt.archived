@@ -1,23 +1,15 @@
-npm install firebase
-
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-apiKey: "AIzaSyAZ0_PUQDlDGsphJHuBhReC5jihHLXNxkE",
-authDomain: "meu-blog-poesia.firebaseapp.com",
-projectId: "meu-blog-poesia",
-storageBucket: "meu-blog-poesia.firebasestorage.app",
-messagingSenderId: "968280071508",
-appId: "1:968280071508:web:d0e9d4625e007977edfcc1",
-measurementId: "G-VGFJHZXH1S"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+Estrutura
+/
+├── index.html # Página principal (lista de poemas/home)
+├── poema.html # Página modelo para ler um poema específico
+├── css/
+│ ├── style.css # Estilos globais (substituindo o globals.css)
+│ ├── components.css # Estilos para botões, cards e modais (adaptando o visual do shadcn/ui)
+│ └── themes/ # Seus arquivos de tema atuais (default, starry-night, retro, etc.)
+├── js/
+│ ├── main.js # Lógica de inicialização e injeção de dados no HTML
+│ ├── theme.js # Lógica para alternar entre os temas
+│ └── data.js # (Opcional) Array com os poemas estáticos enquanto o banco não é conectado
+└── assets/
+├── img/ # placeholder.jpg, logos
+└── icons/ # SVGs

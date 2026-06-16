@@ -1,0 +1,329 @@
+/* =========================================
+   1. VARIÁVEIS GERAIS (TEMA PADRÃO)
+   ========================================= */
+:root {
+  --bg-color: #fafafa;
+  --text-main: #2d3748;
+  --text-light: #718096;
+  --card-bg: #ffffff;
+  --border-color: #e2e8f0;
+  --accent-color: #4a5568;
+
+  --font-ui: "Sora", sans-serif;
+  --font-poetry: "Sora", sans-serif;
+}
+
+/* =========================================
+   1.1. TEMA: FOLHA ANTIGA (SÉPIA)
+   ========================================= */
+body.theme-sepia {
+  --bg-color: #f4ecd8;
+  --text-main: #4a3f35;
+  --text-light: #8b7d6b;
+  --card-bg: #fdf8eb;
+  --border-color: #d1c5a9;
+  --accent-color: #b05c36;
+}
+
+/* =========================================
+   1.2. TEMA: NOITE (DARK / AZUL PROFUNDO)
+   ========================================= */
+body.theme-night {
+  --bg-color: #0f172a;
+  --text-main: #f1f5f9;
+  --text-light: #94a3b8;
+  --card-bg: #1e293b;
+  --border-color: #334155;
+  --accent-color: #60a5fa;
+}
+
+/* =========================================
+   2. RESET BÁSICO
+   ========================================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-family: var(--font-ui);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+/* =========================================
+   3. ESTRUTURA E LAYOUT
+   ========================================= */
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.site-header {
+  text-align: center;
+  padding: 60px 0 40px;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 40px;
+}
+
+.site-header h1 {
+  font-family: var(--font-poetry);
+  font-size: 2.5rem;
+  font-weight: normal;
+  margin-bottom: 10px;
+  color: var(--text-main);
+}
+
+.site-header p {
+  color: var(--text-light);
+  font-size: 1.1rem;
+}
+
+.theme-switcher {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.theme-btn {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 9999px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background-color 0.2s;
+}
+
+.theme-btn:hover,
+.theme-btn.active {
+  background-color: var(--border-color);
+}
+
+.site-footer {
+  text-align: center;
+  padding: 40px 0;
+  margin-top: 60px;
+  color: var(--text-light);
+  border-top: 1px solid var(--border-color);
+  font-size: 0.9rem;
+}
+
+/* =========================================
+   4. FILTROS DE TAGS
+   ========================================= */
+.filtros-container {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.filtros-titulo {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-bottom: 16px;
+}
+
+#tag-ativa {
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+.tags-filtro {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tag-btn {
+  font-size: 0.85rem;
+  font-family: var(--font-ui);
+  color: var(--text-main);
+  background-color: var(--card-bg);
+  padding: 6px 16px;
+  border-radius: 9999px;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tag-btn:hover {
+  border-color: var(--text-light);
+}
+
+.tag-btn.active {
+  background-color: var(--text-main);
+  color: var(--bg-color);
+  border-color: var(--text-main);
+}
+
+/* =========================================
+   5. GRID DE POEMAS
+   ========================================= */
+.poemas-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+}
+
+@media (min-width: 600px) {
+  .poemas-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* =========================================
+   6. CARDS DE POEMA
+   ========================================= */
+.poema-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s;
+}
+
+/* Tiramos o "pulinho", deixando só uma leve mudança na borda */
+.poema-card:hover {
+  border-color: #cbd5e1;
+}
+
+.poema-titulo {
+  font-family: var(--font-poetry);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.poema-preview {
+  color: var(--text-light);
+  margin-bottom: 24px;
+  flex-grow: 1;
+}
+
+/* Estilo do botão estilo Instagram */
+.ver-mais {
+  color: var(--text-light);
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s;
+  white-space: nowrap; /* Impede de quebrar a linha no meio do botão */
+}
+
+.ver-mais:hover {
+  color: var(--text-main);
+}
+
+/* =========================================
+   7. RODAPÉ DO CARD (TAGS E LIKES)
+   ========================================= */
+.poema-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  border-top: 1px solid var(--border-color);
+  padding-top: 16px;
+}
+
+.poema-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  background-color: var(--bg-color);
+  padding: 4px 12px;
+  border-radius: 9999px; /* Formato exato de pílula */
+  border: 1px solid var(--border-color);
+}
+
+/* Preparação para o botão de like */
+.like-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-light);
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: transform 0.2s;
+}
+
+.like-btn:hover {
+  transform: scale(
+    1.1
+  ); /* Dá uma leve "inchada" no coração ao passar o mouse */
+  color: var(--text-main);
+}
+
+/* =========================================
+   8. LEITOR LATERAL (SLIDE DA DIREITA)
+   ========================================= */
+.leitor-lateral {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  height: 100vh;
+  background-color: var(--bg-color);
+  z-index: 1000;
+  overflow-y: auto;
+  transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.leitor-lateral.aberto {
+  right: 0;
+}
+
+.leitor-conteudo {
+  padding-top: 40px;
+  padding-bottom: 80px;
+}
+
+.fechar-btn {
+  background: none;
+  border: none;
+  color: var(--text-light);
+  font-size: 1rem;
+  font-family: var(--font-ui);
+  cursor: pointer;
+  margin-bottom: 40px;
+  padding: 8px 0;
+  display: inline-block;
+  transition: color 0.2s;
+}
+
+.fechar-btn:hover {
+  color: var(--text-main);
+}
+
+.leitor-poema-titulo {
+  font-family: var(--font-poetry);
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  color: var(--text-main);
+}
+
+.leitor-poema-texto {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: var(--text-main);
+  white-space: pre-wrap;
+}
