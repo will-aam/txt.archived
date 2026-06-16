@@ -119,7 +119,7 @@ body {
 }
 
 /* =========================================
-   4. FILTROS DE TAGS
+   4. FILTROS DE TAGS (GERAL)
    ========================================= */
 .filtros-container {
   margin-bottom: 40px;
@@ -167,6 +167,102 @@ body {
 }
 
 /* =========================================
+   4.1 BOTTOM SHEET (SÓ PARA MOBILE)
+   ========================================= */
+.btn-mobile-filtro {
+  display: none; /* Escondido no PC */
+  background-color: var(--card-bg);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  padding: 10px 24px;
+  border-radius: 9999px;
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  cursor: pointer;
+  margin: 0 auto 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.filtros-overlay,
+.sheet-handle,
+.sheet-title {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .btn-mobile-filtro {
+    display: block; /* Mostra o botão */
+  }
+
+  /* Transforma o container das pílulas numa gaveta que fica escondida embaixo */
+  .filtros-sheet {
+    position: fixed;
+    bottom: -100%;
+    left: 0;
+    width: 100%;
+    background-color: var(--bg-color);
+    z-index: 2000;
+    border-radius: 24px 24px 0 0;
+    padding: 16px 20px 40px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+  }
+
+  .filtros-sheet.aberto {
+    bottom: 0;
+  }
+
+  /* A barrinha do iOS no topo da gaveta */
+  .sheet-handle {
+    display: block;
+    width: 40px;
+    height: 5px;
+    background-color: var(--border-color);
+    border-radius: 10px;
+    margin: 0 auto 20px;
+    cursor: pointer;
+  }
+
+  .sheet-title {
+    display: block;
+    text-align: center;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    color: var(--text-main);
+  }
+
+  /* O fundo escuro com desfoque premium */
+  .filtros-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px); /* Mágica do iOS */
+    z-index: 1999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .filtros-overlay.ativo {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .tags-filtro {
+    overflow-y: auto;
+    max-height: 50vh;
+    padding-bottom: 20px;
+  }
+}
+
+/* =========================================
    5. GRID DE POEMAS
    ========================================= */
 .poemas-grid {
@@ -194,7 +290,6 @@ body {
   transition: border-color 0.2s;
 }
 
-/* Tiramos o "pulinho", deixando só uma leve mudança na borda */
 .poema-card:hover {
   border-color: #cbd5e1;
 }
@@ -212,13 +307,12 @@ body {
   flex-grow: 1;
 }
 
-/* Estilo do botão estilo Instagram */
 .ver-mais {
   color: var(--text-light);
   font-weight: 600;
   cursor: pointer;
   transition: color 0.2s;
-  white-space: nowrap; /* Impede de quebrar a linha no meio do botão */
+  white-space: nowrap;
 }
 
 .ver-mais:hover {
@@ -248,11 +342,10 @@ body {
   color: var(--text-light);
   background-color: var(--bg-color);
   padding: 4px 12px;
-  border-radius: 9999px; /* Formato exato de pílula */
+  border-radius: 9999px;
   border: 1px solid var(--border-color);
 }
 
-/* Preparação para o botão de like */
 .like-btn {
   background: none;
   border: none;
@@ -267,9 +360,7 @@ body {
 }
 
 .like-btn:hover {
-  transform: scale(
-    1.1
-  ); /* Dá uma leve "inchada" no coração ao passar o mouse */
+  transform: scale(1.1);
   color: var(--text-main);
 }
 
@@ -283,7 +374,7 @@ body {
   width: 100%;
   height: 100vh;
   background-color: var(--bg-color);
-  z-index: 1000;
+  z-index: 3000; /* Aumentado para garantir que fica por cima de tudo */
   overflow-y: auto;
   transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
