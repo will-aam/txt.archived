@@ -1138,4 +1138,21 @@ Ainda doi, ainda sinto falta...
     preview: `Sinto falta...`,
     tags: ["reflexão"],
   },
+
+  {
+    id: 42,
+    title: "Carta de Amor",
+    content: `Escrevi pensando em você, enquanto eu trabalhava — por isso esse trecho que ecoa em meu coração está escrito neste pedaço de papel de recibo fiscal.
+
+Estava lembrando do seu abraço, o qual me afaga...
+Me sinto esquecido no mundo das ideias de Platão.
+Mas esse conceito filosofal não faz muito o meu tipo; afinal, ele subverte aquilo em que creio.
+Sabe, não considero o mundo físico inferior, muito menos que meu corpo seja uma prisão da minha alma.
+Pois quando você me envolve em seus abraços, eu escuto
+a declaração de que a criação é "muito boa".
+Então dispenso o escapismo espiritual platônico e me recolho no conforto que recebo quando você deita sobre o meu peito, envolvendo sua alma com a minha.
+Me sinto em casa.`,
+    preview: "A solidão é uma dor silenciosa que corrói a alma...",
+    tags: ["amor", "reflexão"],
+  },
 ];
