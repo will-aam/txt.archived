@@ -1152,6 +1152,7 @@ Pois quando você me envolve em seus abraços, eu escuto
 a declaração de que a criação é "muito boa".
 Então dispenso o escapismo espiritual platônico e me recolho no conforto que recebo quando você deita sobre o meu peito, envolvendo sua alma com a minha.
 Me sinto em casa.`,
+    // date: "23 de Junho, de 2026",
     preview: "A solidão é uma dor silenciosa que corrói a alma...",
     tags: ["amor", "reflexão"],
   },
